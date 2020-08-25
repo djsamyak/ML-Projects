@@ -11,7 +11,7 @@ def arima_rD(rD,rA,df):
     #Data Processing
     dates = []
     for _ in range(len(rD)):
-        dates.append(datetime.date(2020,1,30) + datetime.timedelta(_))
+        dates.append(datetime.date(2020,1,22) + datetime.timedelta(_))
         
     d1={"dates":dates,"detailed":rD}
     df1 = pd.DataFrame(d1)
@@ -32,38 +32,38 @@ def arima_rD(rD,rA,df):
     import itertools
     import warnings
     warnings.filterwarnings('ignore')
-    p=d=q=range(0,4)
+    p=d=q=range(0,8)
     pdq = list(itertools.product(p,d,q))
     rmse = []
     parameter = 0
     for param in pdq:
         try:
-            model_india = ARIMA(df1["detailed"][:96], order=param)
+            model_india = ARIMA(df1["detailed"][:181], order=param)
             model_india_fit = model_india.fit()
-            india_predictions = model_india_fit.forecast(steps=10)[0]
-            rmse.append(math.sqrt(mean_squared_error(df1["detailed"][96:],india_predictions)))
+            india_predictions = model_india_fit.forecast(steps=11)[0]
+            rmse.append(math.sqrt(mean_squared_error(df1["detailed"][181:],india_predictions)))
             if rmse[-1] == min(rmse):
                 parameter = param
         except:
             continue
     
     #ARIMA
-    arima_values = ARIMA(df1["detailed"][:96],(3,2,0)).fit()
+    arima_values = ARIMA(df1["detailed"][:181],(7,0,0)).fit()
     #print(arima_values.summary())
     
-    prediction = arima_values.forecast(steps = 10)[0]
-    residual_arima = df1["detailed"][96:] - prediction
+    prediction = arima_values.forecast(steps = 11)[0]
+    residual_arima = df1["detailed"][181:] - prediction
     
-    dataset = []
+    dataset1 = []
     for _ in range(len(rA)):
-        if _<96:
-            dataset.append(rA[_])
+        if _<181:
+            dataset1.append(rA[_])
         else:
-            dataset.append(rA[_] + residual_arima[_])
+            dataset1.append(rA[_] + residual_arima[_])
         
-    print(f"The RMSE is: {math.sqrt(mean_squared_error(df['india'][103:113].tolist(),dataset[96:]))}")
+    print(f"RMSE: {math.sqrt(mean_squared_error(df['india'][181:192].tolist(),dataset1[181:]))}")
     
-    return residual_arima,dataset,df1
+    return residual_arima,dataset1,df1
 
 
 
