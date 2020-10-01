@@ -2,10 +2,10 @@ import math
 import datetime
 import numpy as np
 import pandas as pd
-from keras.layers import Dense
+from tensorflow.keras.layers import Dense
 import matplotlib.pyplot as plt
-from keras.optimizers import Adam
-from keras.models import Sequential
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.models import Sequential
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 
